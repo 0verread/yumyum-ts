@@ -1,2 +1,2 @@
 # yumyum-ts
-restaurants table management system
+restaurants table management system implemented using typescript
