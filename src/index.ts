@@ -1,4 +1,7 @@
 import { Hono } from 'hono';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { reservations } from './db/schema';
+import { neon } from '@neondatabase/serverless';
 
 
 export type Env = {
@@ -21,27 +24,15 @@ type details = {
   special?: string
 }
 
-type reservation = {
-  id: number,
-  user: User,
-  createdAt: Date,
-  details: details, 
-}
-
-const reservations: reservation[] = [];
-
 app.get('/', (c) => {
   return c.text('Welcome to yumyum API!')
 })
 
-app.get('/v1/reservations', (c) => {
-  return c.json(reservations)
-})
-
-app.get('/v1/reservations/:id', (c) => {
-  const { id } = c.req.param()
-  const reseravation = reservations.filter(data => data.id === parseInt(id))
-  return c.json(reseravation)
+app.get('/v1/reservations', async (c) => {
+  const sql = neon(c.env.DB_URL);
+  const db = drizzle(sql);
+  const result = await db.select().from(reservations);
+  return c.json({ result });
 })
 
 export default app;
