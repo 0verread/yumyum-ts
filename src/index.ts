@@ -1,6 +1,11 @@
 import { Hono } from 'hono';
 
-const app = new Hono()
+
+export type Env = {
+  DB_URL: string;
+};
+
+const app = new Hono<{Bindings: Env}>();
 
 type User = {
   id: string,
@@ -10,6 +15,8 @@ type User = {
 }
 
 type details = {
+  date: Date,
+  time: string,
   numSeats: number,
   special?: string
 }
@@ -17,8 +24,6 @@ type details = {
 type reservation = {
   id: number,
   user: User,
-  reservedFor: Date, // which date is that reseravation for
-  time: string,
   createdAt: Date,
   details: details, 
 }
